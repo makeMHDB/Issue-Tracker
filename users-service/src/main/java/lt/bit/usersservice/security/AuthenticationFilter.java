@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lt.bit.usersservice.exception.AuthenticationFailedException;
 import lt.bit.usersservice.model.UsersRegisterAndLoginRequest;
 import lt.bit.usersservice.service.UsersService;
 
@@ -38,13 +39,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException {
 		try {
+			System.out.println("attemptAuthentication() method");
 			UsersRegisterAndLoginRequest creds = new ObjectMapper().readValue(request.getInputStream(),
 					UsersRegisterAndLoginRequest.class);
 
 			return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(creds.getUsername(),
 					creds.getPassword(), usersService.loadUserByUsername(creds.getUsername()).getAuthorities()));
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new AuthenticationFailedException();
 		}
 	}
 
