@@ -15,8 +15,15 @@ import lt.bit.issueservice.repository.PeopleRepository;
 @Service
 public class PeopleServiceImpl implements PeopleService {
 
-	@Autowired
 	PeopleRepository peopleRepository;
+	UsersServiceClient usersServiceClient;
+
+	@Autowired
+	public PeopleServiceImpl(PeopleRepository peopleRepository, UsersServiceClient usersServiceClient) {
+		super();
+		this.peopleRepository = peopleRepository;
+		this.usersServiceClient = usersServiceClient;
+	}
 
 	@Override
 	public void createPersonForUser(CreatePersonRequest personDetails) {
@@ -42,6 +49,16 @@ public class PeopleServiceImpl implements PeopleService {
 		personEntity = modelMapper.map(personDetails, People.class);
 		peopleRepository.save(personEntity);
 
+	}
+
+	@Override
+	public void deletePerson(Integer id) {
+		People personEntity = peopleRepository.findByUserId(id);
+		if (personEntity == null) {
+			throw new UserNotFoundException(id.toString());
+		}
+		peopleRepository.delete(personEntity);
+		usersServiceClient.deleteUser(id);
 	}
 
 }

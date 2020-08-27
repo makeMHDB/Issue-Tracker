@@ -16,7 +16,7 @@ import lt.bit.usersservice.model.UsersRegisterAndLoginRequest;
 public interface UsersService extends UserDetailsService {
 
 	void createUser(UsersRegisterAndLoginRequest userDetails);
-
+	void deleteUser(Integer id);
 	Integer getUserId(String username);
 
 }

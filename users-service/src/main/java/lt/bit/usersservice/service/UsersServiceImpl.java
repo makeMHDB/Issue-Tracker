@@ -87,4 +87,10 @@ public class UsersServiceImpl implements UsersService {
 		return userEntity.getId();
 	}
 
+	@Override
+	public void deleteUser(Integer id) {
+		Users userEntity = usersRepository.findById(id).get();
+		usersRepository.delete(userEntity);
+	}
+
 }
