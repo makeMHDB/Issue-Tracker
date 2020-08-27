@@ -5,24 +5,31 @@
  */
 package lt.bit.usersservice.controller;
 
-import lt.bit.usersservice.model.UsersRegisterAndLoginRequest;
-import lt.bit.usersservice.service.UsersService;
+import java.util.Collections;
+import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lt.bit.usersservice.model.UsersRegisterAndLoginRequest;
+import lt.bit.usersservice.service.UsersService;
+
 /**
  *
  * @author makeMH
  */
 @RestController
-@RequestMapping("/")
+@RequestMapping("/users")
 public class UsersController {
 
 	@Autowired
@@ -33,11 +40,18 @@ public class UsersController {
 		usersService.createUser(userDetails);
 		return ResponseEntity.status(HttpStatus.CREATED).body("User is created");
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity deleteUser(@PathVariable Integer id){
+	public ResponseEntity deleteUser(@PathVariable Integer id) {
 		usersService.deleteUser(id);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping("/getUserId")
+	public String getUserIdFromJwt(HttpServletRequest req) {
+		Integer returnValue = usersService.getUserIdFromJwt(req);
+		String ret = String.valueOf(returnValue);
+		return ret;
 	}
 
 }

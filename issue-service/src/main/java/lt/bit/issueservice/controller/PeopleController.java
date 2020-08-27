@@ -20,7 +20,7 @@ import lt.bit.issueservice.service.PeopleService;
 public class PeopleController {
 
 	@Autowired
-	PeopleService peopleService;
+	private PeopleService peopleService;
 
 	@PostMapping
 	public ResponseEntity createPersonForUser(@RequestBody CreatePersonRequest personDetails) {

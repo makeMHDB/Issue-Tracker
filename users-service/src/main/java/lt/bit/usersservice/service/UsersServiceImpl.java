@@ -5,17 +5,25 @@
  */
 package lt.bit.usersservice.service;
 
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.hibernate.mapping.Collection;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Jwts;
 import lt.bit.usersservice.entity.Roles;
 import lt.bit.usersservice.entity.Users;
 import lt.bit.usersservice.exception.UserAlreadyExistsException;
@@ -35,6 +43,9 @@ public class UsersServiceImpl implements UsersService {
 	private RolesRepository rolesRepository;
 	private IssueServiceClient issueServiceClient;
 	private BCryptPasswordEncoder encoder;
+
+	@Autowired
+	private Environment environment;
 
 	@Autowired
 	public UsersServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository,
@@ -91,6 +102,26 @@ public class UsersServiceImpl implements UsersService {
 	public void deleteUser(Integer id) {
 		Users userEntity = usersRepository.findById(id).get();
 		usersRepository.delete(userEntity);
+	}
+
+	@Override
+	public Integer getUserIdFromJwt(HttpServletRequest req) {
+		String authorizationHeader = req.getHeader("Authorization");
+
+		if (authorizationHeader == null) {
+			return null;
+		}
+
+		String token = authorizationHeader.replace("Bearer ", "");
+
+		String userId = Jwts.parser().setSigningKey(environment.getProperty("token.secret")).parseClaimsJws(token)
+				.getBody().getSubject();
+
+		if (userId == null) {
+			return null;
+		}
+
+		return Integer.parseInt(userId);
 	}
 
 }

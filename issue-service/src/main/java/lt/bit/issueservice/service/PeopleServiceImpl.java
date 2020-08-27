@@ -15,14 +15,15 @@ import lt.bit.issueservice.repository.PeopleRepository;
 @Service
 public class PeopleServiceImpl implements PeopleService {
 
-	PeopleRepository peopleRepository;
-	UsersServiceClient usersServiceClient;
+	private PeopleRepository peopleRepository;
+	private UsersServiceClient usersServiceClient;
+	private ModelMapper modelMapper;
 
 	@Autowired
-	public PeopleServiceImpl(PeopleRepository peopleRepository, UsersServiceClient usersServiceClient) {
-		super();
+	public PeopleServiceImpl(PeopleRepository peopleRepository, UsersServiceClient usersServiceClient, ModelMapper modelMapper) {
 		this.peopleRepository = peopleRepository;
 		this.usersServiceClient = usersServiceClient;
+		this.modelMapper = modelMapper;
 	}
 
 	@Override
@@ -31,9 +32,6 @@ public class PeopleServiceImpl implements PeopleService {
 		if (personEntity != null) {
 			throw new UserAlreadyExistsException();
 		}
-
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		personEntity = modelMapper.map(personDetails, People.class);
 		peopleRepository.save(personEntity);
 	}
@@ -44,8 +42,6 @@ public class PeopleServiceImpl implements PeopleService {
 		if (personEntity == null) {
 			throw new UserNotFoundException(id.toString());
 		}
-		ModelMapper modelMapper = new ModelMapper();
-		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		personEntity = modelMapper.map(personDetails, People.class);
 		peopleRepository.save(personEntity);
 

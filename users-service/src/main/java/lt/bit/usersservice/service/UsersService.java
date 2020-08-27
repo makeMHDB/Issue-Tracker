@@ -5,6 +5,8 @@
  */
 package lt.bit.usersservice.service;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import lt.bit.usersservice.model.UsersRegisterAndLoginRequest;
@@ -17,6 +19,7 @@ public interface UsersService extends UserDetailsService {
 
 	void createUser(UsersRegisterAndLoginRequest userDetails);
 	void deleteUser(Integer id);
+	Integer getUserIdFromJwt(HttpServletRequest req);
 	Integer getUserId(String username);
 
 }
