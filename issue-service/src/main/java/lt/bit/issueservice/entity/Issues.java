@@ -269,7 +269,13 @@ public class Issues implements Serializable {
 
 	@Override
 	public String toString() {
-		return "lt.bit.bandomasisspring.test.Issues[ issueId=" + issueId + " ]";
+		return "Issues [issueId=" + issueId + ", issueSummary=" + issueSummary + ", issueDescription="
+				+ issueDescription + ", identifiedDate=" + identifiedDate + ", status=" + status + ", priority="
+				+ priority + ", targetResolutionDate=" + targetResolutionDate + ", actualResolutionDate="
+				+ actualResolutionDate + ", resolutionSummary=" + resolutionSummary + ", createdOn=" + createdOn
+				+ ", createdBy=" + createdBy + ", modifiedOn=" + modifiedOn + ", modifiedBy=" + modifiedBy
+				+ ", identifiedByPersonId=" + identifiedByPersonId + ", assignedToPersonId=" + assignedToPersonId
+				+ ", relatedProjectId=" + relatedProjectId + "]";
 	}
 
 }

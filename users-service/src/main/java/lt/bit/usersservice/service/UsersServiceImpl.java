@@ -62,7 +62,7 @@ public class UsersServiceImpl implements UsersService {
 
 		usersRepository.save(userEntity);
 
-		CreatePersonRequest cpr = new CreatePersonRequest(userEntity.getId(), "Hardcoded Name", "hardcoded@email.com");
+		CreatePersonRequest cpr = new CreatePersonRequest(userEntity.getId(), "", "");
 		try {
 			issueServiceClient.createPersonForUser(cpr);
 		} catch (Exception e) {

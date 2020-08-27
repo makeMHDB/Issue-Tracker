@@ -194,7 +194,9 @@ public class Projects implements Serializable {
 
 	@Override
 	public String toString() {
-		return "lt.bit.bandomasisspring.test.Projects[ projectId=" + projectId + " ]";
+		return "Projects [projectId=" + projectId + ", projectName=" + projectName + ", startDate=" + startDate
+				+ ", targetEndDate=" + targetEndDate + ", actualEndDate=" + actualEndDate + ", createdOn=" + createdOn
+				+ ", createdBy=" + createdBy + ", modifiedOn=" + modifiedOn + ", modifiedBy=" + modifiedBy + "]";
 	}
 
 }

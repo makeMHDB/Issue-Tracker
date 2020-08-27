@@ -147,7 +147,8 @@ public class People implements Serializable {
 
 	@Override
 	public String toString() {
-		return "lt.bit.bandomasisspring.test.People[ personId=" + personId + " ]";
+		return "People [personId=" + personId + ", userId=" + userId + ", personName=" + personName + ", personEmail="
+				+ personEmail + "]";
 	}
 
 }
