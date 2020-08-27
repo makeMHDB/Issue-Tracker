@@ -5,24 +5,16 @@
  */
 package lt.bit.usersservice.service;
 
-import java.util.Collections;
 import java.util.HashSet;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import lt.bit.usersservice.entity.Roles;
 import lt.bit.usersservice.entity.Users;
@@ -41,14 +33,16 @@ public class UsersServiceImpl implements UsersService {
 
 	private UsersRepository usersRepository;
 	private RolesRepository rolesRepository;
+	private IssueServiceClient issueServiceClient;
 	private BCryptPasswordEncoder encoder;
 
 	@Autowired
 	public UsersServiceImpl(UsersRepository usersRepository, RolesRepository rolesRepository,
-			BCryptPasswordEncoder encoder) {
+			BCryptPasswordEncoder encoder, IssueServiceClient issueServiceClient) {
 		this.usersRepository = usersRepository;
 		this.rolesRepository = rolesRepository;
 		this.encoder = encoder;
+		this.issueServiceClient = issueServiceClient;
 	}
 
 	@Override
@@ -68,14 +62,12 @@ public class UsersServiceImpl implements UsersService {
 
 		usersRepository.save(userEntity);
 
-		String url = "http://localhost:8080/issue-service/people";
-		RestTemplate restTemplate = new RestTemplate();
-
 		CreatePersonRequest cpr = new CreatePersonRequest(userEntity.getId(), "Hardcoded Name", "hardcoded@email.com");
-
-		HttpEntity<CreatePersonRequest> request = new HttpEntity<CreatePersonRequest>(cpr);
-		ResponseEntity<CreatePersonRequest> response = restTemplate.postForEntity(url, request,
-				CreatePersonRequest.class);
+		try {
+			issueServiceClient.createPersonForUser(cpr);
+		} catch (Exception e) {
+			usersRepository.delete(userEntity);
+		}
 	}
 
 	@Override
