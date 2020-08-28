@@ -25,6 +25,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({ @NamedQuery(name = "Issues.findAll", query = "SELECT i FROM Issues i"),
 		@NamedQuery(name = "Issues.findByIssueId", query = "SELECT i FROM Issues i WHERE i.issueId = :issueId"),
 		@NamedQuery(name = "Issues.findByIssueSummary", query = "SELECT i FROM Issues i WHERE i.issueSummary = :issueSummary"),
+		@NamedQuery(name = "Issues.findByIssueSummaryAndProject", query = "SELECT i FROM Issues i WHERE i.issueSummary = :issueSummary AND i.relatedProjectId = :relatedProjectId"),
 		@NamedQuery(name = "Issues.findByIssueDescription", query = "SELECT i FROM Issues i WHERE i.issueDescription = :issueDescription"),
 		@NamedQuery(name = "Issues.findByIdentifiedDate", query = "SELECT i FROM Issues i WHERE i.identifiedDate = :identifiedDate"),
 		@NamedQuery(name = "Issues.findByStatus", query = "SELECT i FROM Issues i WHERE i.status = :status"),

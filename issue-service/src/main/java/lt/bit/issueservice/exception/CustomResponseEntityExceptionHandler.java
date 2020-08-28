@@ -57,4 +57,18 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_FOUND);
 	}
 
+	@ExceptionHandler(IssueAlreadyExistsException.class)
+	public final ResponseEntity<ExceptionResponse> handleIssueAlreadyExistsException(Exception ex, WebRequest request) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.FOUND);
+	}
+
+	@ExceptionHandler(IssueNotFoundException.class)
+	public final ResponseEntity<ExceptionResponse> handleIssueNotFoundException(Exception ex, WebRequest request) {
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), ex.getMessage(),
+				request.getDescription(false));
+		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_FOUND);
+	}
+
 }
