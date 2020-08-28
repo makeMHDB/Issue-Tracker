@@ -48,10 +48,9 @@ public class UsersController {
 	}
 
 	@GetMapping("/getUserId")
-	public String getUserIdFromJwt(HttpServletRequest req) {
+	public Integer getUserIdFromJwt(HttpServletRequest req) {
 		Integer returnValue = usersService.getUserIdFromJwt(req);
-		String ret = String.valueOf(returnValue);
-		return ret;
+		return returnValue;
 	}
 
 }

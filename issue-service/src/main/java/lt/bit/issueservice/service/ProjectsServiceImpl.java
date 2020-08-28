@@ -2,18 +2,20 @@ package lt.bit.issueservice.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lt.bit.issueservice.entity.People;
 import lt.bit.issueservice.entity.Projects;
 import lt.bit.issueservice.exception.ProjectAlreadyExistsException;
+import lt.bit.issueservice.exception.ProjectNotFoundException;
 import lt.bit.issueservice.model.CreateProjectRequest;
-import lt.bit.issueservice.model.GetUserIdResponse;
 import lt.bit.issueservice.repository.PeopleRepository;
 import lt.bit.issueservice.repository.ProjectsRepository;
 
@@ -42,8 +44,8 @@ public class ProjectsServiceImpl implements ProjectsService {
 		if (projectEntity != null) {
 			throw new ProjectAlreadyExistsException();
 		}
-		String userIdResponse = usersServiceClient.getUserIdFromJwt(req.getHeader("Authorization"));
-		People personEntity = peopleRepository.findByUserId(Integer.parseInt(userIdResponse));
+		Integer userId = usersServiceClient.getUserIdFromJwt(req.getHeader("Authorization"));
+		People personEntity = peopleRepository.findByUserId(userId);
 
 		projectEntity = modelMapper.map(projectDetails, Projects.class);
 		projectEntity.setStartDate(new Date());
@@ -51,6 +53,51 @@ public class ProjectsServiceImpl implements ProjectsService {
 		projectEntity.setCreatedOn(new Date());
 		projectEntity.setModifiedBy(personEntity.getPersonName());
 		projectEntity.setModifiedOn(new Date());
+		projectsRepository.save(projectEntity);
+	}
+
+	@Override
+	public void updateProject(CreateProjectRequest projectDetails, Integer id, HttpServletRequest req) {
+		Optional<Projects> projectEntityOptional = projectsRepository.findById(id);
+		if (!projectEntityOptional.isPresent()) {
+			throw new ProjectNotFoundException(id.toString());
+		}
+		Integer userId = usersServiceClient.getUserIdFromJwt(req.getHeader("Authorization"));
+		People personEntity = peopleRepository.findByUserId(userId);
+
+		Projects projectEntity = projectEntityOptional.get();
+		projectEntity.setProjectName(projectDetails.getProjectName());
+		projectEntity.setTargetEndDate(projectDetails.getTargetEndDate());
+		projectEntity.setModifiedOn(new Date());
+		projectEntity.setModifiedBy(personEntity.getPersonName());
+		projectsRepository.save(projectEntity);
+
+	}
+
+	@Override
+	public void deleteProject(Integer id) {
+		Optional<Projects> projectEntityOptional = projectsRepository.findById(id);
+		if (!projectEntityOptional.isPresent()) {
+			throw new ProjectNotFoundException(id.toString());
+		}
+
+		projectsRepository.delete(projectEntityOptional.get());
+
+	}
+
+	@Override
+	public void closeProject(Integer id, HttpServletRequest req) {
+		Optional<Projects> projectEntityOptional = projectsRepository.findById(id);
+		if (!projectEntityOptional.isPresent()) {
+			throw new ProjectNotFoundException(id.toString());
+		}
+		Integer userId = usersServiceClient.getUserIdFromJwt(req.getHeader("Authorization"));
+		People personEntity = peopleRepository.findByUserId(userId);
+
+		Projects projectEntity = projectEntityOptional.get();
+		projectEntity.setActualEndDate(new Date());
+		projectEntity.setModifiedOn(new Date());
+		projectEntity.setModifiedBy(personEntity.getPersonName());
 		projectsRepository.save(projectEntity);
 	}
 

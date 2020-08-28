@@ -13,6 +13,6 @@ public interface UsersServiceClient {
 	void deleteUser(@PathVariable Integer id);
 
 	@RequestMapping(method = RequestMethod.GET, value = "/users/getUserId")
-	String getUserIdFromJwt(@RequestHeader(value = "Authorization", required = true) String authorizationHeader);
+	Integer getUserIdFromJwt(@RequestHeader(value = "Authorization", required = true) String authorizationHeader);
 
 }
